@@ -28,10 +28,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QtWidgets/QMainWindow>
 #include "configwindow.h"
 #include <QMap>
-#include <QComboBox>
+#include <QtWidgets/QComboBox>
 #include "config.h"
 
 namespace Ui {

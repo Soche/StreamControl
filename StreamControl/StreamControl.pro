@@ -6,12 +6,14 @@
 
 QT       += core gui xml
 
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
 TARGET = StreamControl
 TEMPLATE = app
 
-
+#CONFIG+=wwwidgets
 CONFIG += static
-static { // Everything below takes effect with CONFIG += static
+static { #// Everything below takes effect with CONFIG += static
     CONFIG += static
     DEFINES += STATIC
     message("Static build.")
@@ -32,3 +34,5 @@ RESOURCES += \
     resources.qrc
 	
 RC_FILE = streamcontrol.rc
+
+

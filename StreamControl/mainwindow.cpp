@@ -33,12 +33,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ui_mainwindow.h"
 #include "configwindow.h"
 #include <QtDebug>
-#include <QShortcut>
-#include <QMessageBox>
-#include <QComboBox>
-#include <QAction>
-#include <QLabel>
-#include <QInputDialog>
+#include <QtWidgets/QShortcut>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -122,6 +122,22 @@ void MainWindow::loadSettings() {
            gameComboBox->addItem(gameE.text());
         }
 
+        QDomElement p1cE = settingsXML.namedItem("player1").toElement();
+
+        for(QDomNode n = p1cE.firstChild(); !n.isNull(); n = n.nextSibling())
+        {
+           QDomElement p1colorE = n.toElement();
+           ui->p1Color->addItem(p1colorE.text());
+        }
+
+        QDomElement p2cE = settingsXML.namedItem("player2").toElement();
+
+        for(QDomNode n = p2cE.firstChild(); !n.isNull(); n = n.nextSibling())
+        {
+           QDomElement p2colorE = n.toElement();
+           ui->p2Color->addItem(p2colorE.text());
+        }
+
         settings["xsplitPath"] = xsplitPath;
 
         //gameComboBox->addItem("Persona 4: Arena");
@@ -157,6 +173,15 @@ void MainWindow::loadSettings() {
         gameComboBox->addItem("Tekken Tag Tournament 2");
         gameComboBox->addItem("Soul Calibur V");
         gameComboBox->addItem("King of Fighters XIII");
+
+        ui->p1Color->addItem("B");
+        ui->p1Color->addItem("R");
+        ui->p1Color->addItem("G");
+        ui->p1Color->addItem("P");
+        ui->p2Color->addItem("B");
+        ui->p2Color->addItem("R");
+        ui->p2Color->addItem("G");
+        ui->p2Color->addItem("P");
 
         saveSettings();
     }
@@ -195,6 +220,27 @@ void MainWindow::saveSettings() {
         gameE.appendChild(gameText);
     }
 
+    QDomElement p1E = doc.createElement("player1");
+    settingsXML.appendChild(p1E);
+
+
+    for (int i = 0; i < ui->p1Color->count(); ++i) {
+        QDomElement p1colorE = doc.createElement("color");
+        p1E.appendChild(p1colorE);
+        QDomCDATASection p1CText = doc.createCDATASection(ui->p1Color->itemText(i));
+        p1colorE.appendChild(p1CText);
+    }
+
+    QDomElement p2E = doc.createElement("player2");
+    settingsXML.appendChild(p2E);
+
+
+    for (int i = 0; i < ui->p2Color->count(); ++i) {
+        QDomElement p2colorE = doc.createElement("color");
+        p2E.appendChild(p2colorE);
+        QDomCDATASection p2CText = doc.createCDATASection(ui->p2Color->itemText(i));
+        p2colorE.appendChild(p2CText);
+    }
 
     QTextStream out(&file);
     out.setCodec("UTF-8");
@@ -219,6 +265,7 @@ void MainWindow::loadData()
     QDomElement pScore1 = items.namedItem("pScore1").toElement();
     QDomElement pScore2 = items.namedItem("pScore2").toElement();
     QDomElement rounds = items.namedItem("rounds").toElement();
+    QDomElement srText = items.namedItem("srText").toElement();
     QDomElement cTitle1 = items.namedItem("cTitle1").toElement();
     QDomElement cTitle2 = items.namedItem("cTitle2").toElement();
     QDomElement mText1 = items.namedItem("mText1").toElement();
@@ -226,12 +273,15 @@ void MainWindow::loadData()
     QDomElement mText3 = items.namedItem("mText3").toElement();
     QDomElement mText4 = items.namedItem("mText4").toElement();
     QDomElement game = items.namedItem("game").toElement();
+    QDomElement p1c = items.namedItem("p1c").toElement();
+    QDomElement p2c = items.namedItem("p2c").toElement();
 
     ui->pName1->setText(pName1.text());
     ui->pScore1->setValue(pScore1.text().toInt());
     ui->pName2->setText(pName2.text());
     ui->pScore2->setValue(pScore2.text().toInt());
     ui->rounds->setValue(rounds.text().toInt());
+    ui->srText->setText(srText.text());
     ui->cTitle1->setText(cTitle1.text());
     ui->cTitle2->setText(cTitle2.text());
     ui->mText1->setText(mText1.text());
@@ -247,6 +297,10 @@ void MainWindow::loadData()
         gameComboBox->setCurrentIndex(gameComboBox->findText(game.text()));
         saveSettings();
     }
+    int p1CIndex = ui->p1Color->findText(p1c.text());
+    ui->p1Color->setCurrentIndex(p1CIndex);
+    int p2CIndex = ui->p2Color->findText(p2c.text());
+    ui->p2Color->setCurrentIndex(p2CIndex);
 
 }
 
@@ -315,6 +369,16 @@ void MainWindow::saveData()
     QDomText roundst = doc.createTextNode(ui->rounds->text());
     rounds.appendChild(roundst);
 
+    QDomElement srText = doc.createElement("srText");
+    items.appendChild(srText);
+
+    if (useCDATA) {
+        QDomCDATASection srTextt = doc.createCDATASection(ui->srText->text());
+        srText.appendChild(srTextt);
+    } else {
+        QDomText srTextt = doc.createTextNode(ui->srText->text());
+        srText.appendChild(srTextt);
+    }
 
 
     QDomElement cTitle1 = doc.createElement("cTitle1");
@@ -405,6 +469,28 @@ void MainWindow::saveData()
         gameE.appendChild(gameT);
     }
 
+    QDomElement p1cE = doc.createElement("p1c");
+    items.appendChild(p1cE);
+
+    if (useCDATA) {
+        QDomCDATASection p1cT = doc.createCDATASection(ui->p1Color->currentText());
+        p1cE.appendChild(p1cT);
+    } else {
+        QDomText p1cT = doc.createTextNode(ui->p1Color->currentText());
+        p1cE.appendChild(p1cT);
+    }
+
+    QDomElement p2cE = doc.createElement("p2c");
+    items.appendChild(p2cE);
+
+    if (useCDATA) {
+        QDomCDATASection p2cT = doc.createCDATASection(ui->p2Color->currentText());
+        p2cE.appendChild(p2cT);
+    } else {
+        QDomText p2cT = doc.createTextNode(ui->p2Color->currentText());
+        p2cE.appendChild(p2cT);
+    }
+
 
     QTextStream out(&file);
     out.setCodec("UTF-8");
@@ -417,6 +503,11 @@ void MainWindow::resetScores()
 {
     ui->pScore1->setValue(0);
     ui->pScore2->setValue(0);
+    ui->pName1->setText("");
+    ui->pName2->setText("");
+    ui->p1Color->setCurrentIndex(-1);
+    ui->p2Color->setCurrentIndex(-1);
+    ui->srText->setText("");
 }
 
 void MainWindow::swapNames()
@@ -427,6 +518,10 @@ void MainWindow::swapNames()
     int tempscore = ui->pScore1->text().toInt();
     ui->pScore1->setValue(ui->pScore2->text().toInt());
     ui->pScore2->setValue(tempscore);
+    int tempColor = ui->p1Color->currentIndex();
+    ui->p1Color->setCurrentIndex(ui->p2Color->currentIndex());
+    ui->p2Color->setCurrentIndex(tempColor);
+
 }
 
 

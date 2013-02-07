@@ -28,7 +28,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef CONFIGWINDOW_H
 #define CONFIGWINDOW_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 #include <QMap>
 #include "config.h"
 

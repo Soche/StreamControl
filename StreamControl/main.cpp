@@ -27,10 +27,10 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <QFile>
 #include <QTextStream>
-#include <QtGui/QApplication>
+#include <QtWidgets/QApplication>
 #include "mainwindow.h"
 #include <QtPlugin>
-#include <QPlastiqueStyle>
+//#include <QPlastiqueStyle>
 
 //Q_IMPORT_PLUGIN(qcncodecs)
 //Q_IMPORT_PLUGIN(qjpcodecs)
@@ -39,8 +39,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QStyle *style = new QPlastiqueStyle;
-    QApplication::setStyle(style);
+//    QStyle *style = new QPlastiqueStyle;
+//   QApplication::setStyle(style);
     MainWindow mainWindow;
     mainWindow.show();
     mainWindow.loadSettings();
